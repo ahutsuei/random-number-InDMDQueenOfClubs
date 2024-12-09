@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>隨機數字生成器</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-image: url('01.jpg'); /* 替換為背景圖片 */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            font-family: Arial, sans-serif;
+        }
+        .button {
+            position: absolute;
+            cursor: pointer;
+            width: 1920px; /* 縮小圖片按鈕寬度 */
+            height: 1080px; /* 縮小圖片按鈕高度 */
+            object-fit: cover; /* 確保圖片保持比例 */
+            border: none;
+            transition: transform 0.2s ease;
+        }
+        .button:active {
+            transform: scale(0.8); /* 按下時縮小 */
+        }
+        .display {
+            position: absolute;
+            top: 90%;
+            left: 50%;
+            transform: translate(-50%, -50%); /* 確保顯示區域居中 */
+            z-index: 10; /* 設置最高層級 */
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 30px 60px;
+            border-radius: 10px;
+            border: 2px solid #ccc;
+            font-size: 4rem;
+            font-weight: bold;
+            color: #333;
+            text-align: center;
+            visibility: hidden; /* 預設隱藏 */
+            transition: transform 1s ease; /* 加入動畫過渡效果 */
+        }
+    </style>
+</head>
+<body>
+    <!-- 數字顯示區域 -->
+    <div class="display" id="displayArea"></div>
+
+    <!-- 按鈕區域 -->
+    <img src="02.png" alt="按鈕" class="button" onclick="generateRandomNumber()" /> <!-- 替換為按鈕圖片 -->
+
+    <script>
+        let numbers = Array.from({ length: 100 }, (_, i) => i + 1); // 生成 1-100 的數字陣列
+
+        // 音效加載
+        const sound = new Audio('03.mp3'); // 替換為音效文件路徑
+
+        function generateRandomNumber() {
+            if (numbers.length === 0) {
+                alert('所有數字都已顯示完畢！');
+                return;
+            }
+
+            const displayArea = document.getElementById('displayArea');
+            let randomNumber;
+
+            // 隨機選取並移除一個數字
+            const randomIndex = Math.floor(Math.random() * numbers.length);
+            randomNumber = numbers.splice(randomIndex, 1)[0];
+
+            // 計算跳動的間隔，這裡將總時間設為 5 秒
+            const totalDuration = 4100; // 總時間為 5 秒
+            const maxCycles = 40; // 最大跳動次數
+            const interval = totalDuration / maxCycles; // 計算每次跳動的間隔
+
+            let counter = 0;
+
+            function animateNumbers() {
+                if (counter < maxCycles) {
+                    const tempNumber = Math.floor(Math.random() * 100) + 1; // 生成 1-100 的隨機數字
+                    displayArea.textContent = tempNumber;
+                    displayArea.style.visibility = 'visible';
+
+                    sound.play(); // 播放音效
+
+                    counter++;
+
+                    setTimeout(animateNumbers, interval); // 使用 setTimeout 動態設置間隔
+                } else {
+                    displayArea.textContent = randomNumber; // 最終顯示隨機數字
+                    // 動畫結束後，顯示數字並放大
+                    displayArea.classList.add('enlarge'); // 添加放大效果
+                }
+            }
+
+            animateNumbers(); // 啟動動畫
+        }
+    </script>
+    </script>
+</body>
+</html>
